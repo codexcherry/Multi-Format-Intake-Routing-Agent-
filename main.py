@@ -503,6 +503,9 @@ def root():
             
             <footer>
                 <p>Multi-Format Intake Routing Agent with Intelligent Classification</p>
+                <div class="footer-links">
+                    <a href="https://github.com/codexcherry" class="footer-link" target="_blank">GitHub</a>
+                </div>
                 <p class="copyright">© 2025 MIRA System</p>
             </footer>
         </div>
