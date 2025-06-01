@@ -3,7 +3,7 @@ import os
 from typing import Dict, List, Any, Optional
 
 # Configure the Gemini API with the provided key
-API_KEY = "AIzaSyCMEfoX-jyVFslgNRxhbxm1PbXITd-0BU8"
+API_KEY = "YOUR_Gemini_API_KEY"
 genai.configure(api_key=API_KEY)
 
 class GeminiClient:
