@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Format Intake Agent</title>
+    <style>
+        :root {
+            --primary-color: #8A2BE2;
+            --secondary-color: #9370DB;
+            --accent-color: #00BFFF;
+            --dark-bg: #121212;
+            --dark-card: #1E1E1E;
+            --dark-content: #262626;
+            --dark-border: #333333;
+            --dark-text: #FFFFFF;
+            --light-text: #F0F0F0;
+            --success-color: #4CAF50;
+            --danger-color: #F44336;
+            --border-radius: 10px;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            --transition-speed: 0.3s;
+            --glow-color: rgba(138, 43, 226, 0.6);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(138, 43, 226, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(0, 191, 255, 0.1) 0%, transparent 30%);
+            animation: gradientMove 20s ease infinite alternate;
+            z-index: -1;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            border-bottom: 1px solid var(--dark-border);
+            padding-bottom: 2rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--glow-color); }
+            50% { box-shadow: 0 0 20px var(--glow-color); }
+            100% { box-shadow: 0 0 5px var(--glow-color); }
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin: 0.8rem 0;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.4);
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .card {
+            background-color: var(--dark-card);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            transition: all var(--transition-speed) ease;
+            animation: slideIn 0.5s ease-out;
+            border: 1px solid var(--dark-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 15px var(--glow-color);
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            animation: slideIn 0.7s ease-out;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--light-text);
+            transition: all var(--transition-speed) ease;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+        
+        input[type="file"] {
+            margin-top: 0.8rem;
+            width: 100%;
+            color: var(--light-text);
+            background-color: var(--dark-content);
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--dark-border);
+            cursor: pointer;
+        }
+        
+        input[type="file"]::-webkit-file-upload-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius);
+            height: 150px;
+            font-family: inherit;
+            resize: vertical;
+            background-color: var(--dark-content);
+            color: var(--light-text);
+            transition: all var(--transition-speed) ease;
+            font-size: 0.95rem;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.2), 0 0 8px var(--glow-color);
+        }
+        
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: block;
+            margin: 0 auto;
+            min-width: 180px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4), 0 0 15px var(--glow-color);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(40, 40);
+                opacity: 0;
+            }
+        }
+        
+        .result {
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .result-header h2 {
+            color: var(--light-text);
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+            letter-spacing: 0.5px;
+        }
+        
+        .result-content {
+            background-color: var(--dark-content);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            position: relative;
+            min-height: 120px;
+            color: var(--light-text);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3), 0 0 10px var(--glow-color);
+        }
+        
+        .success-message {
+            color: var(--success-color);
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background-color: var(--dark-content);
+            border-radius: var(--border-radius);
+            padding: 0.4rem;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3), 0 0 10px var(--glow-color);
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-weight: 600;
+            color: var(--light-text);
+            opacity: 0.7;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            text-align: center;
+            border-radius: calc(var(--border-radius) - 4px);
+            letter-spacing: 0.5px;
+        }
+        
+        .tab.active {
+            color: white;
+            opacity: 1;
+        }
+        
+        .tabs::after {
+            content: '';
+            position: absolute;
+            height: calc(100% - 0.8rem);
+            left: 0.4rem;
+            top: 0.4rem;
+            width: calc(33.33% - 0.8rem);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: calc(var(--border-radius) - 4px);
+            transition: all var(--transition-speed) ease;
+            z-index: 0;
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+        
+        .tabs.json::after {
+            left: calc(33.33% + 0.4rem);
+        }
+        
+        .tabs.email::after {
+            left: calc(66.66% + 0.4rem);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--light-text);
+            transition: all var(--transition-speed) ease;
+            z-index: 10;
+            letter-spacing: 0.5px;
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px var(--glow-color);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 5rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--dark-border);
+            color: var(--secondary-color);
+            opacity: 0.9;
+            animation: fadeIn 1s ease-in-out;
+            background: linear-gradient(to right, transparent, rgba(138, 43, 226, 0.1), transparent);
+        }
+        
+        footer p {
+            margin: 0.8rem 0;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+        
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-top: 1rem;
+        }
+        
+        footer .footer-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        
+        footer .footer-link:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+            text-shadow: 0 0 8px var(--glow-color);
+        }
+        
+        .copyright {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .text-display {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            padding: 1rem;
+            color: var(--light-text);
+            letter-spacing: 0.3px;
+        }
+        
+        .section-heading {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-top: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
+            padding-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.3);
+        }
+        
+        .item-list {
+            margin-left: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        .item-list::before {
+            content: "•";
+            color: var(--accent-color);
+            margin-right: 0.8rem;
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.3);
+        }
+        
+        .extracted-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--dark-content);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--light-text);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--dark-content);
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4), 0 0 8px var(--glow-color);
+        }
+        
+        .extracted-text::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .extracted-text::-webkit-scrollbar-track {
+            background: var(--dark-content);
+            border-radius: 4px;
+        }
+        
+        .extracted-text::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            border-radius: 4px;
+        }
+        
+        /* Highlight animation for important information */
+        .highlight {
+            animation: highlight 2s ease-in-out;
+        }
+        
+        @keyframes highlight {
+            0% { background-color: rgba(138, 43, 226, 0.2); }
+            100% { background-color: transparent; }
+        }
+        
+        /* Fancy card effect */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color), var(--primary-color));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 0 20px var(--glow-color);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+            animation: gradientBorder 3s linear infinite;
+        }
+        
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Logo styling */
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-icon {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .logo-circle {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            animation: pulse 3s infinite;
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+        
+        .logo-square {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--accent-color), #2dd4bf);
+            border-radius: 4px;
+            bottom: 0;
+            right: 0;
+            animation: rotate 6s linear infinite;
+            transform-origin: center;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo-text {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--light-text);
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px var(--glow-color);
+        }
+        
+        /* Single AI enhanced notice styling */
+        .ai-enhanced {
+            background: linear-gradient(to right, rgba(138, 43, 226, 0.1), rgba(0, 191, 255, 0.05));
+            border-left: 4px solid var(--primary-color);
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px var(--glow-color);
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-enhanced::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(138, 43, 226, 0) 0%, 
+                rgba(138, 43, 226, 0.1) 50%, 
+                rgba(138, 43, 226, 0) 100%);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        
+        .ai-enhanced h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 8px var(--glow-color);
+        }
+        
+        .ai-enhanced h4::before {
+            content: "✨";
+            margin-right: 0.8rem;
+            animation: pulse 2s infinite;
+            font-size: 1.4rem;
+        }
+        
+        .ai-enhanced p {
+            color: var(--light-text);
+            opacity: 0.9;
+            letter-spacing: 0.3px;
+            font-size: 1rem;
+        }
+        
+        .ai-badge {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            font-size: 0.9rem;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            display: inline-block;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3), 0 0 10px var(--glow-color);
+            animation: pulse 2s infinite;
+            letter-spacing: 0.8px;
+            font-weight: 500;
+        }
+        
+        /* Styling for details/summary elements */
+        details {
+            margin: 1rem 0;
+            border-radius: var(--border-radius);
+            background-color: var(--dark-content);
+            overflow: hidden;
+        }
+        
+        summary {
+            padding: 1rem;
+            cursor: pointer;
+            background-color: var(--dark-card);
+            border-bottom: 1px solid var(--dark-border);
+            font-weight: 600;
+            color: var(--accent-color);
+            transition: all var(--transition-speed) ease;
+            user-select: none;
+        }
+        
+        summary:hover {
+            background-color: rgba(138, 43, 226, 0.1);
+        }
+        
+        summary:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+        
+        details[open] summary {
+            border-bottom: 1px solid var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <span class="logo-circle"></span>
+                    <span class="logo-square"></span>
+                </div>
+                <div class="logo-text">MIRA</div>
+            </div>
+            <h1>Multi-Format Intake Routing Agent</h1>
+            <p class="subtitle">Intelligent classification and routing for PDF, JSON, and Email data</p>
+            <div class="ai-badge">Powered by Gemini AI</div>
+        </header>
+        
+        <main>
+            <div class="card">
+                <div class="tabs">
+                    <div class="tab active" data-tab="file">File Upload</div>
+                    <div class="tab" data-tab="json">JSON Data</div>
+                    <div class="tab" data-tab="email">Email Text</div>
+                </div>
+                
+                <form id="intakeForm">
+                    <div class="tab-content active" id="file-tab">
+                        <div class="form-group">
+                            <label for="file">Upload PDF, JSON, or Email file:</label>
+                            <input type="file" id="file" name="file" accept=".pdf,.json,.txt,.eml">
+                            <small class="form-text">Supported formats: PDF, JSON, Email (.eml or .txt)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="json-tab">
+                        <div class="form-group">
+                            <label for="json_data">Paste JSON Data:</label>
+                            <textarea id="json_data" name="json_data" placeholder='{"key": "value"}'></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="email-tab">
+                        <div class="form-group">
+                            <label for="email_text">Paste Email Text:</label>
+                            <textarea id="email_text" name="email_text" placeholder="From: sender@example.com&#10;Subject: Request for Quote&#10;&#10;This is an urgent request for quote..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <button type="submit">Process Input</button>
+                </form>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing your input...</p>
+            </div>
+            
+            <div class="result" id="result-container" style="display: none;">
+                <div class="card">
+                    <div class="result-header">
+                        <h2>Result</h2>
+                        <div id="message"></div>
+                    </div>
+                    <div class="result-content" id="result">
+                        <button class="copy-btn" id="copy-btn">Copy</button>
+                        <pre id="result-json"></pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Multi-Format Intake Routing Agent with Intelligent Classification</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">API Reference</a>
+                <a href="#" class="footer-link">GitHub</a>
+            </div>
+            <p class="copyright">© 2025 MIRA System</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => {
+                    c.classList.remove('active');
+                    c.style.display = 'none';
+                });
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                const tabContent = document.getElementById(`${tab.dataset.tab}-tab`);
+                tabContent.classList.add('active');
+                
+                // Add the proper class to move the tabs indicator
+                const tabsContainer = document.querySelector('.tabs');
+                tabsContainer.className = 'tabs';
+                if (tab.dataset.tab === 'json') {
+                    tabsContainer.classList.add('json');
+                } else if (tab.dataset.tab === 'email') {
+                    tabsContainer.classList.add('email');
+                }
+                
+                // Fade in animation
+                setTimeout(() => {
+                    tabContent.style.display = 'block';
+                    tabContent.classList.add('highlight');
+                    setTimeout(() => {
+                        tabContent.classList.remove('highlight');
+                    }, 1000);
+                }, 50);
+            });
+        });
+        
+        // Form submission
+        document.getElementById('intakeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get active tab
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            
+            // Validate based on active tab
+            if (activeTab === 'file' && !document.getElementById('file').files[0]) {
+                showMessage('Please select a file to upload', 'error');
+                return;
+            }
+            if (activeTab === 'json' && !document.getElementById('json_data').value.trim()) {
+                showMessage('Please enter JSON data', 'error');
+                return;
+            }
+            if (activeTab === 'email' && !document.getElementById('email_text').value.trim()) {
+                showMessage('Please enter email text', 'error');
+                return;
+            }
+            
+            // Show loading spinner with animation
+            const loadingEl = document.getElementById('loading');
+            loadingEl.style.display = 'block';
+            loadingEl.classList.add('fadeIn');
+            document.getElementById('result-container').style.display = 'none';
+            
+            // Add pulsing animation to the submit button
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.classList.add('pulse');
+            submitBtn.disabled = true;
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            try {
+                const res = await fetch('/intake', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Hide loading spinner
+                loadingEl.style.display = 'none';
+                loadingEl.classList.remove('fadeIn');
+                document.getElementById('result-container').style.display = 'block';
+                
+                // Reset button state
+                submitBtn.classList.remove('pulse');
+                submitBtn.disabled = false;
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    
+                    // Format data as human-readable text
+                    const formattedText = formatDataAsText(data);
+                    
+                    // Always display the formatted text
+                    const resultElement = document.getElementById('result-json');
+                    resultElement.innerHTML = formattedText;
+                    
+                    // Check if this was AI enhanced and show a special indicator
+                    if (data.ai_enhanced || (data.metadata && data.metadata.ai_enhanced)) {
+                        // Remove any existing AI enhanced messages first
+                        const existingMessages = document.querySelectorAll('.ai-enhanced');
+                        existingMessages.forEach(msg => msg.remove());
+                        
+                        // We're not displaying the AI enhanced message anymore
+                        // Just store the information in a data attribute for reference
+                        document.getElementById('result').dataset.aiEnhanced = 'true';
+                    }
+                    
+                    // Apply highlight animation to the result content
+                    setTimeout(() => {
+                        document.querySelector('.result-content').classList.add('highlight');
+                        setTimeout(() => {
+                            document.querySelector('.result-content').classList.remove('highlight');
+                        }, 2000);
+                    }, 200);
+                    
+                    showMessage('Input processed successfully!', 'success');
+                } else {
+                    try {
+                        const error = await res.json();
+                        document.getElementById('result-json').textContent = JSON.stringify(error, null, 2);
+                        showMessage(`Error: ${error.error || res.statusText}`, 'error');
+                    } catch (err) {
+                        // If we can't parse the error as JSON
+                        document.getElementById('result-json').textContent = `Error: ${res.status} ${res.statusText}`;
+                        showMessage(`Error: ${res.status} ${res.statusText}`, 'error');
+                    }
+                }
+            } catch (error) {
+                // Hide loading spinner
+                loadingEl.style.display = 'none';
+                loadingEl.classList.remove('fadeIn');
+                document.getElementById('result-container').style.display = 'block';
+                
+                // Reset button state
+                submitBtn.classList.remove('pulse');
+                submitBtn.disabled = false;
+                
+                document.getElementById('result-json').textContent = `Error: ${error.message}`;
+                showMessage('An error occurred while processing your request', 'error');
+            }
+        });
+        
+        // Apply initial active tab styling
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeTab = document.querySelector('.tab.active');
+            if (activeTab && activeTab.dataset.tab === 'json') {
+                document.querySelector('.tabs').classList.add('json');
+            } else if (activeTab && activeTab.dataset.tab === 'email') {
+                document.querySelector('.tabs').classList.add('email');
+            }
+        });
+        
+        // Copy result to clipboard
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            // Get the text content without HTML formatting
+            const textElement = document.getElementById('result-json');
+            // Extract just the text content from the HTML
+            const textToCopy = textElement.textContent;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const copyBtn = document.getElementById('copy-btn');
+                copyBtn.textContent = 'Copied!';
+                copyBtn.classList.add('pulse');
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy';
+                    copyBtn.classList.remove('pulse');
+                }, 2000);
+            });
+        });
+        
+        // Show message
+        function showMessage(message, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = message;
+            messageEl.className = type === 'error' ? 'error-message' : 'success-message';
+            
+            // Add fade-in animation
+            messageEl.style.opacity = 0;
+            setTimeout(() => {
+                messageEl.style.opacity = 1;
+                messageEl.style.transition = 'opacity 0.5s ease';
+            }, 10);
+        }
+        
+        // Format data as human-readable text
+        function formatDataAsText(data) {
+            // Check what type of data we're dealing with
+            if (data.document_type) {
+                // PDF document formatting
+                let output = '<div class="text-display">';
+                
+                // Document info
+                output += `<strong>Document Type:</strong> ${data.document_type}<br>`;
+                output += `<strong>Title:</strong> ${data.title}<br>`;
+                output += `<strong>Size:</strong> ${Math.round(data.size_bytes / 1024)} KB<br>`;
+                output += `<strong>Version:</strong> ${data.version}<br><br>`;
+                
+                // AI Analysis Section
+                if (data.ai_enhanced && data.ai_analysis) {
+                    const ai = data.ai_analysis;
+                    
+                    output += `<div class="section-heading">Analysis Summary</div>`;
+                    output += `This appears to be a ${ai.likely_document_type.toLowerCase()} with approximately ${ai.estimated_page_count} pages.<br><br>`;
+                    
+                    // Content summary if available
+                    if (ai.content_summary) {
+                        output += `<strong>Content Summary:</strong> ${ai.content_summary}<br><br>`;
+                    }
+                    
+                    // Topics
+                    if (ai.topics && ai.topics.length > 0) {
+                        output += `<div class="section-heading">Main Topics</div>`;
+                        output += '<div class="item-list">';
+                        ai.topics.forEach(topic => {
+                            output += `• ${topic}<br>`;
+                        });
+                        output += '</div><br>';
+                    }
+                    
+                    // Recommendations
+                    if (data.recommendations && data.recommendations.length > 0) {
+                        output += `<div class="section-heading">Recommendations</div>`;
+                        output += '<div class="item-list">';
+                        data.recommendations.forEach(rec => {
+                            output += `• ${rec}<br>`;
+                        });
+                        output += '</div><br>';
+                    }
+                }
+                
+                // Display extracted text if available
+                if (data.extracted_text) {
+                    output += `<div class="section-heading">Extracted Content</div>`;
+                    output += `<div class="extracted-text">${data.extracted_text.replace(/\n/g, '<br>')}</div>`;
+                }
+                
+                output += '</div>';
+                return output;
+            } else if (data.sender) {
+                // Email formatting
+                let output = '<div class="text-display">';
+                
+                output += `<strong>From:</strong> ${data.sender}<br>`;
+                output += `<strong>Subject:</strong> ${data.subject}<br>`;
+                output += `<strong>Urgency:</strong> ${data.urgency.charAt(0).toUpperCase() + data.urgency.slice(1)}<br>`;
+                output += `<strong>Intent:</strong> ${data.intent.charAt(0).toUpperCase() + data.intent.slice(1)}<br><br>`;
+                
+                if (data.summary) {
+                    output += `<div class="section-heading">Summary</div>`;
+                    output += `${data.summary}<br><br>`;
+                }
+                
+                output += '</div>';
+                return output;
+            } else if (data.data) {
+                // JSON data formatting
+                let output = '<div class="text-display">';
+                
+                // If there's AI analysis
+                if (data.ai_enhanced && data.ai_analysis) {
+                    const ai = data.ai_analysis;
+                    
+                    // Summary section
+                    if (ai.summary) {
+                        output += `<div class="section-heading">Summary</div>`;
+                        output += `${ai.summary}<br><br>`;
+                    }
+                    
+                    // Purpose section
+                    if (ai.likely_purpose) {
+                        output += `<div class="section-heading">Purpose</div>`;
+                        output += `${ai.likely_purpose}<br><br>`;
+                    }
+                    
+                    // Structure section
+                    if (ai.structure_description) {
+                        output += `<div class="section-heading">Structure</div>`;
+                        output += `${ai.structure_description}<br><br>`;
+                    }
+                    
+                    // Main entities section
+                    if (ai.main_entities && ai.main_entities.length > 0) {
+                        output += `<div class="section-heading">Main Entities</div>`;
+                        output += '<div class="item-list">';
+                        ai.main_entities.forEach(entity => {
+                            output += `• ${entity}<br>`;
+                        });
+                        output += '</div><br>';
+                    }
+                    
+                    // Key data points section
+                    if (ai.key_data_points && ai.key_data_points.length > 0) {
+                        output += `<div class="section-heading">Key Data Points</div>`;
+                        output += '<div class="item-list">';
+                        ai.key_data_points.forEach(point => {
+                            output += `• ${point}<br>`;
+                        });
+                        output += '</div><br>';
+                    }
+                    
+                    // Data quality and missing fields in one section
+                    output += `<div class="section-heading">Data Quality</div>`;
+                    if (ai.data_quality) {
+                        output += `<strong>Quality Assessment:</strong> ${ai.data_quality.charAt(0).toUpperCase() + ai.data_quality.slice(1)}<br>`;
+                    }
+                    
+                    if (ai.missing_fields && ai.missing_fields.length > 0) {
+                        output += `<strong>Missing Fields:</strong> ${ai.missing_fields.join(', ')}<br><br>`;
+                    } else {
+                        output += `<strong>Missing Fields:</strong> None identified<br><br>`;
+                    }
+                    
+                    // Insights section
+                    if (ai.insights && ai.insights.length > 0) {
+                        output += `<div class="section-heading">Key Insights</div>`;
+                        output += '<div class="item-list">';
+                        ai.insights.forEach(insight => {
+                            output += `• ${insight}<br>`;
+                        });
+                        output += '</div><br>';
+                    }
+                    
+                    // Add a collapsible section for the raw JSON data
+                    output += `<div class="section-heading">Raw JSON Data</div>`;
+                    output += `<details>
+                        <summary>Click to view raw data</summary>
+                        <div class="extracted-text">${JSON.stringify(data.data, null, 2)}</div>
+                    </details>`;
+                } else {
+                    // Display raw JSON data when no AI analysis is available
+                    output += `<div class="section-heading">JSON Data</div>`;
+                    output += `<div class="extracted-text">${JSON.stringify(data.data, null, 2)}</div>`;
+                    
+                    // Display metadata if available
+                    if (data.metadata) {
+                        output += `<div class="section-heading">Metadata</div>`;
+                        if (data.metadata.missing_fields && data.metadata.missing_fields.length > 0) {
+                            output += `<strong>Missing Fields:</strong> ${data.metadata.missing_fields.join(', ')}<br>`;
+                        }
+                        output += `<strong>Source:</strong> ${data.metadata.source}<br>`;
+                        output += `<strong>Processed At:</strong> ${data.metadata.processed_at}<br>`;
+                    }
+                }
+                
+                output += '</div>';
+                return output;
+            }
+            
+            // Default: return as JSON
+            return JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html> 
