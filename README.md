@@ -15,9 +15,6 @@
 
 MIRA is an advanced document processing system that intelligently analyzes and extracts information from multiple data formats. Using the power of Gemini AI, it understands the content and context of your documents, providing valuable insights and structured data.
 
-<div align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=MIRA+System+Architecture" alt="MIRA Architecture" width="700px"/>
-</div>
 
 ## ✨ Key Features
 
@@ -72,7 +69,7 @@ MIRA consists of four specialized agents working together:
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/codexcherry/Multi-Format-Intake-Routing-Agent-
    cd Multi-Format-Intake-Routing-Agent
    ```
 
